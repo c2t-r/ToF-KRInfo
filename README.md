@@ -12,7 +12,9 @@
 
 ## Option
 - Change the time to send
-  - Open [KRInfo.yml](.github/workflows/KRInfo.yml) and set the time
+  - Open [KRInfo.yml](.github/workflows/KRInfo.yml) and set the time  
+    ![image](https://github.com/c2t-r/ToF-KRInfo/assets/80561604/7b6b28dd-53c9-4c6a-9428-17f46ee8beee)
+
 
 ## Troubleshooting
 Send me the issue in this repo

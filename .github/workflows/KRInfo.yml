@@ -1,7 +1,6 @@
 name: InfoScrape
 
 on: 
-  push:
   workflow_dispatch:
   schedule: # Time to send (UTC+0)
     - cron: "00 23 * * *" #08:00

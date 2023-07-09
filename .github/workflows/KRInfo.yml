@@ -1,0 +1,38 @@
+name: InfoScrape
+
+on: 
+  push:
+  workflow_dispatch:
+  schedule: # UTC+0
+    - cron: "00 23 * * *" #08:00
+    - cron: "00 00 * * *" #09:00
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 16.13.1
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.13.1'
+
+    - name: install command
+      run: |
+             yarn add dotenv
+             yarn add puppeteer
+             yarn add discord.js@14
+
+    - name: RUN script
+      run: node index.js
+
+    - name: test upload-artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Raw json
+        path: output_embed.json

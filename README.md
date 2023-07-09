@@ -2,8 +2,9 @@
 ![image](https://github.com/c2t-r/ToF-KRInfo/assets/80561604/9055a75c-1b76-484e-9c21-ddb4fc1f749b)
 
 ## Usage
-1. Clone this repository  
-2. Open `.env` file  
+1. Import this repository from [here](https://github.com/new/import)  
+![image](https://github.com/c2t-r/ToF-KRInfo/assets/80561604/e6ada4e5-0025-4038-bd50-3bca9d7130d9)
+2. Open [`.env`](.env) file  
 ![image](https://github.com/c2t-r/ToF-KRInfo/assets/80561604/7d210a5c-75fb-44c1-8c4d-0de0e31449fc)  
 3. Edit it  
 ![image](https://github.com/c2t-r/ToF-KRInfo/assets/80561604/c19f3329-ee58-43f2-b55e-95d0b7bc7bf4)  

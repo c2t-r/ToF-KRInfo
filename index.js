@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer')
 const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
 const fs = require('fs');
+const fetch = require('node-fetch');
 const dotenv = require('dotenv');
 dotenv.config();
 

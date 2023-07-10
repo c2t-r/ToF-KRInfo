@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer')
 const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
 const fs = require('fs');
-const fetch = require('node-fetch');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -72,7 +71,7 @@ dotenv.config();
     };
 
     let json_data = JSON.stringify(data, null, '    ');
-    fs.writeFileSync('output_embed.json', json_data);
+    fs.writeFileSync('output.json', json_data);
 
     const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
         method: 'POST',

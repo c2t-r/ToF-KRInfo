@@ -52,7 +52,7 @@ dotenv.config();
             url: imageurl
         },
         footer: {
-            icon_url: "https://cdn.discordapp.com/app-icons/887607844281667584/b97035c621a1ca6d3723d0d6864a379e.png",
+            icon_url: "https://raw.githubusercontent.com/c2t-r/ToF-KRInfo/main/icon.png",
             text: "@brooks_up"
         },
         timestamp: new Date()

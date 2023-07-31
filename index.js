@@ -1,52 +1,47 @@
-const puppeteer = require('puppeteer')
 const sleep = waitTime => new Promise(resolve => setTimeout(resolve, waitTime));
 const fs = require('fs');
-const fetch = require('node-fetch');
+//const fetch = require('node-fetch');
 const dotenv = require('dotenv');
 dotenv.config();
 
 (async () => {
     console.log("start");
+    const response = await fetch("https://comm-api.game.naver.com/nng_main/v1/user/e5c134b920a0f5667bf50043db6d7cf7/feeds?limit=20&loungeId=TOF&offset=0&order=NEW")
+        .then(response => response.json())
+        .then(data => {
+            let resp = JSON.stringify(data, null, '    ');
+            fs.writeFileSync('output.json', resp);
+            return data;
+        });
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1366, height: 768 });
-    await page.goto("https://game.naver.com/profile/e5c134b920a0f5667bf50043db6d7cf7/TOF#feed");
-    await sleep(5000);
+    console.log("fetched!");
 
-    await page.screenshot({ path: 'Screenshot.png', fullPage: false });
+    const title = response.content.feeds[0].feed.title
+    const imageurl = response.content.feeds[0].feed.repImageUrl
 
-    // latest post url
-    let latest = await page.$("#root > div > div > div:nth-child(3) > div:nth-child(2) > div > div:nth-child(2) > ul  > li > div > div");
-    element = await (await latest.getProperty('innerHTML')).jsonValue();
-    let imageurl = element.slice((element.indexOf("https://")), (element.indexOf("&quot;);")));
-    imageurl = imageurl.replace("?type=w650", "");
-    console.log(imageurl);
+    const name = response.content.feeds[0].user.nickname
+    const pfLink = `https://game.naver.com/profile/${response.content.feeds[0].user.userIdHash}/TOF#feed`
+    const pfp = response.content.feeds[0].user.profileImageUrl
 
-    //latest post title
-    let postdetail = await page.$("#root > div > div > div:nth-child(3) > div:nth-child(2) > div > div:nth-child(2) > ul  > li > div > div > div:nth-child(2) > div");
-    let posttitle_result = await postdetail.$("strong");
-    let posttitle = await (await posttitle_result.getProperty('textContent')).jsonValue();
-    let posttag_result = await postdetail.$("em");
-    let posttag = await (await posttag_result.getProperty('textContent')).jsonValue();
-    posttag = posttag.replace("공지사항", "お知らせ").replace("일러스트", "イラスト").replace("네 컷 만화", "4コマ漫画").replace("게임 가이드", "ゲームガイド").replace("유튜브 영상", "YouTube");
+    const feedLink = response.content.feeds[0].feedLink.mobile
 
-    browser.close();
-    console.log('Took!');
+    const tag = response.content.feeds[0].board.boardName
+
+    const thumbnail = response.content.feeds[0].lounge.logoImageSquareUrl
 
     //discord
     const Embed = {
         color: 0x38f4af,
         author: {
-            name: "CM미아",
-            url: "https://game.naver.com/profile/e5c134b920a0f5667bf50043db6d7cf7/TOF#feed",
-            icon_url: "https://nng-phinf.pstatic.net/MjAyMjA2MjFfMTQ5/MDAxNjU1NzgyNzcwMjgw.iMsMdQv2MbPoKTE0FQVT83xTM9aNgsp36dH8J4U0wcsg.xQwX5rGu_OungiGQ_vNzAykLWHXOP5EF_XFAJM0NYNAg.JPEG/%E6%AC%A2%E8%BF%8E%E8%AF%8D%E5%A4%B4%E5%83%8F.jpg"
+            name: name,
+            url: pfLink,
+            icon_url: pfp
         },
-        title: posttitle,
-        url: "https://game.naver.com/profile/e5c134b920a0f5667bf50043db6d7cf7/TOF#feed",
-        description: `タグ : ${posttag}`,
+        title: title,
+        url: feedLink,
+        description: `タグ : ${tag}`,
         thumbnail: {
-            url: "https://nng-phinf.pstatic.net/MjAyMjEwMjBfMTcy/MDAxNjY2MjI0MjQ5NTU5.dJYNKzFrCDItTYZzeg44AjjDLaqf98YqAQe6Wu2cQs4g.e8U8L2ecHXQff0vTbnB6ncJWZtJ2plMk2Ae3FRzTbSEg.PNG/300300.png"
+            url: thumbnail
         },
         image: {
             url: imageurl
@@ -58,8 +53,7 @@ dotenv.config();
         timestamp: new Date()
     };
 
-    var uri = new URL(imageurl);
-    if (uri.hostname == "i.ytimg.com") {
+    if (response.content.feeds[0].feed.iconTypes[0] == "SNIPPET") {
         let ytlink = "https://youtu.be/" + imageurl.slice(23, 34);
         Embed.description = `タグ : ${posttag}  [YouTubeリンク](${ytlink})`
     }
@@ -71,10 +65,7 @@ dotenv.config();
         embeds: [Embed]
     };
 
-    let json_data = JSON.stringify(data, null, '    ');
-    fs.writeFileSync('output.json', json_data);
-
-    const response = await fetch(process.env.DISCORD_WEBHOOK_URL, {
+    const post = await fetch(process.env.DISCORD_WEBHOOK_URL, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -82,15 +73,15 @@ dotenv.config();
         },
         body: JSON.stringify(data)
     });
-
-    console.log(response.status);
+    console.log(post.status);
+    console.log("finish");
 
     process.exit(0);
 })();
 
-function hoge(){
-  console.log("time out...");
-  process.exit(0);
+function hoge() {
+    console.log("time out...");
+    process.exit(0);
 }
 
 setTimeout(hoge, 20000);
